@@ -1,1 +1,34 @@
+`include "ieee754mul.v"  
+module ieee754mul_tb;
+    reg [31:0] operand_1;
+    reg [31:0] operand_2;
+    wire [31:0] result;
 
+
+    ieee754mul mod0(operand_1,operand_2,result);
+
+  
+    initial
+    begin
+    operand_1 = 32'b01000000111000000000000000000000;       
+    operand_2 = 32'b01000001000100000000000000000000; 
+
+
+   #2
+   operand_1 = 32'b11000000010000000000000000000000;        
+   operand_2 = 32'b11000001000000000000000000000000; 
+
+   #4
+   operand_1 = 32'b01000001000100000000000000000000; 
+   operand_2 = 32'b11000000101000000000000000000000; 
+        
+       
+    end   
+    always 
+    begin
+    #9
+    $finish;
+    end
+initial
+$monitor($time,"\n, operand_1=%b\n, operand_2=%b\n,===============\n,sum=%b\n",operand_1,operand_2,result);
+endmodule
