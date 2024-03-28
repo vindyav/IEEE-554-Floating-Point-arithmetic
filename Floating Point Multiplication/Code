@@ -1,1 +1,34 @@
+module ieee754mul(
+  input [31:0] operand_1,
+  input [31:0] operand_2,
+  output reg [31:0] result
+);
 
+  reg [7:0] exponent_1, exponent_2, exponent, new_exponent;
+  reg [22:0] mantissa_1, mantissa_2, mantissa;
+  reg [47:0] product, shifted_mantissa;
+  
+  always @(operand_1 or operand_2)
+  begin
+  exponent_1 = operand_1[30:23];
+  exponent_2 = operand_2[30:23];
+  mantissa_1 = {operand_1[22:0]};
+  mantissa_2 = {operand_2[22:0]};
+  end
+  always @(operand_1 or operand_2 or mantissa_1 )    
+  begin
+  result[31] = operand_1[31] ^ operand_2[31];      
+  new_exponent = exponent_1 + exponent_2 - 127;
+  shifted_mantissa = {1'b1, mantissa_1} * {1'b1, mantissa_2};
+  if (shifted_mantissa[47] == 1'b1) begin
+  exponent = new_exponent + 1;
+  mantissa[22:0] = shifted_mantissa[45:24];
+  end
+  else if (shifted_mantissa[47] == 1'b0) begin
+  exponent = new_exponent;
+  mantissa[22:0] = shifted_mantissa[45:23];
+  end                                         
+  result[22:0] = mantissa[22:0];
+  result[30:23] = exponent;
+  end
+  endmodule
